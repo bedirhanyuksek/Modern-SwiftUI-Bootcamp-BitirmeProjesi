@@ -31,7 +31,6 @@ struct PDFService {
             
             var yPosition: CGFloat = 72
             
-            // Başlık
             let titleAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.boldSystemFont(ofSize: 24),
                 .foregroundColor: UIColor.black
@@ -40,7 +39,6 @@ struct PDFService {
             title.draw(at: CGPoint(x: 72, y: yPosition), withAttributes: titleAttributes)
             yPosition += 40
             
-            // Görev Raporu label
             let reportLabelAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 18),
                 .foregroundColor: UIColor.gray
@@ -48,7 +46,6 @@ struct PDFService {
             "Görev Raporu".draw(at: CGPoint(x: 72, y: yPosition), withAttributes: reportLabelAttributes)
             yPosition += 30
             
-            // Ayırıcı çizgi
             context.cgContext.setStrokeColor(UIColor.gray.cgColor)
             context.cgContext.setLineWidth(1.0)
             context.cgContext.move(to: CGPoint(x: 72, y: yPosition))
@@ -56,7 +53,6 @@ struct PDFService {
             context.cgContext.strokePath()
             yPosition += 30
             
-            // Detaylar
             let detailAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 12),
                 .foregroundColor: UIColor.black
@@ -81,7 +77,6 @@ struct PDFService {
             
             yPosition += 20
             
-            // Oluşturulma tarihi
             let footerAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.italicSystemFont(ofSize: 10),
                 .foregroundColor: UIColor.gray
@@ -90,7 +85,6 @@ struct PDFService {
             footerText.draw(at: CGPoint(x: 72, y: pageHeight - 50), withAttributes: footerAttributes)
         }
         
-        // Geçici dosya olarak kaydet
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(task.id.uuidString).pdf")
         
         do {

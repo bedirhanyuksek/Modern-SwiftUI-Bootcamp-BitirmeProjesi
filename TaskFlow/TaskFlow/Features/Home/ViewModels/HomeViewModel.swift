@@ -28,9 +28,8 @@ final class HomeViewModel: ObservableObject {
         defer { isLoading = false }
         
         do {
-            var allTasks = try await repository.fetchTasks()
+            var allTasks = try await repository.fetchTasks(for: appState.session)
             
-            // Kullanıcıya göre filtreleme
             if let currentUser = appState.session {
                 if currentUser.role != .admin {
                     allTasks = allTasks.filter { $0.isAssigned(to: currentUser) }

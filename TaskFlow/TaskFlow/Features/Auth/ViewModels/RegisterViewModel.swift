@@ -46,7 +46,7 @@ final class RegisterViewModel: ObservableObject {
         switch errorCode {
         case 17007:
             return "Bu e-posta adresi zaten kullanılıyor."
-        case 17008: a
+        case 17008: 
             return "Geçersiz e-posta adresi."
         case 17026:
             return "Şifre çok zayıf. En az 6 karakter olmalıdır."

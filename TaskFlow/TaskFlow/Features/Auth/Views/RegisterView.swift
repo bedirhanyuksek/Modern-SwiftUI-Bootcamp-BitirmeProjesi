@@ -21,10 +21,14 @@ struct RegisterView: View {
                     .keyboardType(.emailAddress)
                 
                 SecureField("Şifre", text: $viewModel.password)
-                    
+                    .textContentType(.password)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
                 
                 SecureField("Şifre Tekrar", text: $viewModel.rePassword)
-                   
+                    .textContentType(.password)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
                     
                 Picker(selection: $viewModel.role) {
                     ForEach(UserRole.allCases, id: \.self) { role in
@@ -60,7 +64,6 @@ struct RegisterView: View {
                     .foregroundStyle(.green)
                     .font(.footnote)
                     .onAppear {
-                        // Başarılı kayıt sonrası 1.5 saniye bekle ve kapat
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             dismiss()
                         }

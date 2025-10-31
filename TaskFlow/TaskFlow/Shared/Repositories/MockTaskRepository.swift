@@ -11,8 +11,11 @@ import Foundation
 final class MockTaskRepository: TaskRepository, ObservableObject {
     @Published private(set) var tasks: [TaskModel] = []
     
-    func fetchTasks() async throws -> [TaskModel] {
-        return tasks
+    func fetchTasks(for user: UserSession?) async throws -> [TaskModel] {
+        guard let user, user.role != .admin else {
+            return tasks
+        }
+        return tasks.filter { $0.isAssigned(to: user) }
     }
     
     func createTask(_ task: TaskModel) async throws {

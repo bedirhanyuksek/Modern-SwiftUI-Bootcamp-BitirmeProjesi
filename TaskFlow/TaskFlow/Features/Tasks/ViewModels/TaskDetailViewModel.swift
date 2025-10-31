@@ -25,7 +25,6 @@ final class TaskDetailViewModel: ObservableObject {
     
     var canUpdateStatus: Bool {
         guard let currentUser = appState.session else { return false }
-        // Admin veya görev kendisine atanan kullanıcı durumu değiştirebilir
         return currentUser.role == .admin || task.isAssigned(to: currentUser)
     }
     

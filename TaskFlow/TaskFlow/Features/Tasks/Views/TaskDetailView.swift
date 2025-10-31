@@ -14,13 +14,11 @@ struct TaskDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Başlık
                 VStack(alignment: .leading, spacing: 8) {
                     Text(viewModel.task.title)
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    // Durum badge
                     HStack {
                         StatusBadge(status: viewModel.task.status)
                         Spacer()
@@ -31,13 +29,12 @@ struct TaskDetailView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(12)
                 
-                // Detaylar
                 VStack(alignment: .leading, spacing: 16) {
                     DetailRow(label: "Açıklama", value: viewModel.task.description)
                     DetailRow(label: "Durum", value: viewModel.statusText(viewModel.task.status))
                     
-                    if let assignedTo = viewModel.task.assignedTo {
-                        DetailRow(label: "Atanan", value: assignedTo)
+                    if let assignedValue = viewModel.task.assignedEmail ?? viewModel.task.assignedTo {
+                        DetailRow(label: "Atanan", value: assignedValue)
                     }
                     
                     DetailRow(label: "Başlangıç Tarihi", value: formatDate(viewModel.task.date))
@@ -50,7 +47,6 @@ struct TaskDetailView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(12)
                 
-                // Durum güncelleme butonu
                 if viewModel.canUpdateStatus, let nextStatus = viewModel.nextStatus {
                     Button {
                         Task {
@@ -75,7 +71,6 @@ struct TaskDetailView: View {
                     .padding(.horizontal)
                 }
                 
-                // PDF butonu (sadece tamamlanan görevler için)
                 if viewModel.task.status == .done {
                     Button {
                         showingPDFShare = true
@@ -179,4 +174,3 @@ struct PDFViewer: View {
             .background(Color(.systemGray6))
     }
 }
-

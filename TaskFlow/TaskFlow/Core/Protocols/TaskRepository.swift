@@ -8,7 +8,7 @@
 import Foundation
 
 protocol TaskRepository {
-    func fetchTasks() async throws -> [TaskModel]
+    func fetchTasks(for user: UserSession?) async throws -> [TaskModel]
     func createTask(_ tasks: TaskModel) async throws
     func deleteTask(id: UUID) async throws
     func updateTaskStatus(_ taskId: UUID, status: TaskStatus) async throws

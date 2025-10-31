@@ -74,7 +74,7 @@ struct SettingsView: View {
         switch value {
         case "light": return .light
         case "dark": return .dark
-        default: return nil // system
+        default: return nil 
         }
     }
 }

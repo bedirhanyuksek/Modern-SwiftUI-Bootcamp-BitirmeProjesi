@@ -23,15 +23,17 @@ struct TaskModel: Identifiable, Codable{
     var title: String
     var description: String
     var assignedTo: String?
+    var assignedEmail: String?
     var status: TaskStatus
     var date: Date
     var slaDeadline: Date?
     
-    init(id: UUID = UUID(), title: String, description: String, status: TaskStatus = .planned, date: Date, assignedTo: String? = nil, slaDeadline: Date? = nil){
+    init(id: UUID = UUID(), title: String, description: String, status: TaskStatus = .planned, date: Date, assignedTo: String? = nil, assignedEmail: String? = nil, slaDeadline: Date? = nil){
         self.id = id
         self.title = title
         self.description = description
         self.assignedTo = assignedTo
+        self.assignedEmail = assignedEmail
         self.status = status
         self.date = date
         self.slaDeadline = slaDeadline
@@ -49,17 +51,32 @@ struct TaskModel: Identifiable, Codable{
         } else if timeRemaining < 3 * 24 * 60 * 60 {
             return .warning
         } else {
-            return .normal // Normal
+            return .normal 
         }
     }
     
     func isAssigned(to user: UserSession) -> Bool {
-        guard let rawAssigned = assignedTo?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !rawAssigned.isEmpty else { return false }
-        if rawAssigned.caseInsensitiveCompare(user.uid) == .orderedSame {
-            return true
+        let normalizedUID = user.uid.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedEmail = user.email.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if let rawAssignedTo = assignedTo?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !rawAssignedTo.isEmpty {
+            if rawAssignedTo.caseInsensitiveCompare(normalizedUID) == .orderedSame {
+                return true
+            }
+            if rawAssignedTo.caseInsensitiveCompare(normalizedEmail) == .orderedSame {
+                return true
+            }
         }
-        return rawAssigned.caseInsensitiveCompare(user.email) == .orderedSame
+        
+        if let rawAssignedEmail = assignedEmail?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !rawAssignedEmail.isEmpty {
+            if rawAssignedEmail.caseInsensitiveCompare(normalizedEmail) == .orderedSame {
+                return true
+            }
+        }
+        
+        return false
     }
 }
 

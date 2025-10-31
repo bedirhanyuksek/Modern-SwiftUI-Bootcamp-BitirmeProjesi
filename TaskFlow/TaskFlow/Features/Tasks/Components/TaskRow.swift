@@ -16,7 +16,6 @@ struct TaskRow: View {
                 Text(task.title)
                     .font(.headline)
                 Spacer()
-                // SLA durumu badge
                 if task.slaStatus != .noDeadline {
                     SLABadge(status: task.slaStatus)
                 }

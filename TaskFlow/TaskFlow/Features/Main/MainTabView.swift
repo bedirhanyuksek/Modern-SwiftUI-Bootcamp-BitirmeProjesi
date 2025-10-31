@@ -14,19 +14,16 @@ struct MainTabView: View {
     var body: some View {
         if let session = appState.session {
             TabView {
-                // Anasayfa
                 HomeView(viewModel: HomeViewModel(repository: repository, appState: appState))
                     .tabItem {
                         Label("Anasayfa", systemImage: "house")
                     }
                 
-                // Görevler
                 TaskListView(viewModel: TaskListViewModel(repository: repository, appState: appState))
                     .tabItem {
                         Label("Görevler", systemImage: "list.bullet")
                     }
                 
-                // Admin için görev oluşturma
                 if session.role == .admin {
                     TaskCreateView(viewModel: TaskCreateViewModel(repository: repository, appState: appState))
                         .tabItem {
@@ -34,7 +31,6 @@ struct MainTabView: View {
                         }
                 }
                 
-                // Ayarlar
                 SettingsView(viewModel: SettingsViewModel(appState: appState))
                     .tabItem {
                         Label("Ayarlar", systemImage: "gearshape")

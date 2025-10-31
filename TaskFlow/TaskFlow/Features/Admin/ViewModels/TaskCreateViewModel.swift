@@ -18,7 +18,18 @@ final class TaskCreateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isLoadingUsers = false
     @Published var errorMessage: String?
-    @Published var assignedTo: String?
+    @Published var assignedTo: String? {
+        didSet {
+            if let id = assignedTo, let user = users.first(where: { $0.uid == id }) {
+                assignedEmail = user.email
+            } else if let id = assignedTo, let currentUser = appState.session, currentUser.uid == id {
+                assignedEmail = currentUser.email
+            } else {
+                assignedEmail = nil
+            }
+        }
+    }
+    @Published var assignedEmail: String?
     @Published var users: [UserSession] = []
     
     private let repository: TaskRepository
@@ -30,6 +41,7 @@ final class TaskCreateViewModel: ObservableObject {
         self.appState = appState
         if let currentUser = appState.session, currentUser.role != .admin {
             self.assignedTo = currentUser.uid
+            self.assignedEmail = currentUser.email
         }
     }
     
@@ -72,6 +84,11 @@ final class TaskCreateViewModel: ObservableObject {
             
             users = loadedUsers
             
+            if let currentAssigned = assignedTo,
+               let matched = loadedUsers.first(where: { $0.uid == currentAssigned }) {
+                assignedEmail = matched.email
+            }
+            
             if users.isEmpty {
                 errorMessage = "Henüz kayıtlı kullanıcı bulunmuyor."
             }
@@ -98,10 +115,20 @@ final class TaskCreateViewModel: ObservableObject {
         }
         
         let finalAssignedTo: String?
+        let finalAssignedEmail: String?
+        
         if let assigned = assignedTo, !assigned.isEmpty {
             finalAssignedTo = assigned
+            if let user = users.first(where: { $0.uid == assigned }) {
+                finalAssignedEmail = user.email
+            } else if let currentUser = appState.session, currentUser.uid == assigned {
+                finalAssignedEmail = currentUser.email
+            } else {
+                finalAssignedEmail = assignedEmail
+            }
         } else if let currentUser = appState.session {
             finalAssignedTo = currentUser.uid
+            finalAssignedEmail = currentUser.email
         } else {
             errorMessage = "Kullanıcı bilgisi bulunamadı."
             return
@@ -111,13 +138,14 @@ final class TaskCreateViewModel: ObservableObject {
         defer { isLoading = false }
         
         do {
-            let task = TaskModel(title: title, description: description, date: date, assignedTo: finalAssignedTo, slaDeadline: slaDeadline)
+            let task = TaskModel(title: title, description: description, date: date, assignedTo: finalAssignedTo, assignedEmail: finalAssignedEmail, slaDeadline: slaDeadline)
             try await repository.createTask(task)
             title = ""
             description = ""
             date = Date()
             slaDeadline = nil
             assignedTo = nil
+            assignedEmail = nil
             errorMessage = nil
         } catch {
             errorMessage = "Görev oluşturulamadı: \(error.localizedDescription)"

@@ -41,7 +41,6 @@ struct LoginView: View {
             .font(.footnote)
             .padding(.top,10)
             
-            Spacer()
             
         }//VStack
         .padding()
